@@ -1,0 +1,118 @@
+/* Estilo geral do body */
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Contêiner dos vídeos */
+#video-wrapper {
+    height: 100vh;
+    background-color: black;
+    scroll-snap-type: y mandatory;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+/* Esconde a barra de rolagem no navegador Webkit */
+#video-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Contêiner de cada vídeo */
+.video-container {
+    height: 100vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    scroll-snap-align: start;
+}
+
+/* Vídeos */
+video {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+/* Controles (like, comentário, visualizações) no rodapé */
+.bottom-actions {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+}
+
+/* Estilo dos botões */
+.like-button, .comment, .view {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Estilo do botão de like quando clicado */
+.liked {
+    color: red;
+}
+
+/* Seção de comentários */
+.comments-section {
+    position: absolute;
+    bottom: 60px;
+    left: 10px;
+    width: 80%;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    color: white;
+    display: none;
+    z-index: 20;
+}
+
+/* Estilo do campo de comentário */
+.comment-input {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+/* Estilo do botão de envio de comentário */
+.comment-input input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+}
+
+/* Estilo do botão de envio */
+.comment-input button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+}
+
+/* Lista de comentários */
+.comments-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Estilo de cada comentário */
+.comments-list li {
+    background-color: #333;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+/* Botão de fechar os comentários */
+.close-comments {
+    margin-top: 10px;
+    cursor: pointer;
+    color: red;
+}
