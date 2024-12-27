@@ -159,4 +159,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 });
 
+import { getDoc, doc, updateDoc, increment } from "firebase/firestore";
+import { db } from "./firebase-config"; // Certifique-se de que está importando corretamente o Firestore
+
+// Função para incrementar visualizações
+const incrementViewCount = async () => {
+    const userRef = doc(db, "usuario", "Eaumi1HIRIfPbbdrwJnD"); // Substitua pelo caminho do documento correto
+
+    try {
+        const userDoc = await getDoc(userRef);
+
+        if (userDoc.exists()) {
+            // Incrementa a contagem de visualizações
+            await updateDoc(userRef, {
+                views: increment(1)
+            });
+            console.log("Visualização registrada!");
+        } else {
+            // Cria o documento caso ele não exista
+            await setDoc(userRef, {
+                views: 1,
+                likes: 0,
+                comments: []
+            });
+            console.log("Documento criado e visualização registrada!");
+        }
+    } catch (error) {
+        console.error("Erro ao registrar visualização:", error);
+    }
+};
+
 
