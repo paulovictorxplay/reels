@@ -50,10 +50,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const commentButton = document.createElement('div');
         commentButton.classList.add('comment');
         commentButton.innerHTML = '💬 <span class="comment-count">0</span>';
+        commentButton.addEventListener('click', () => {
+            commentsSection.style.display = 'block';
+            commentButton.style.display = 'none';
 
+            // Contador de visualizações
+        const incrementViewCount = () => {
+            if (!hasBeenViewed) {
+                hasBeenViewed = true;
+                viewCount++;
+                const viewCountDisplay = viewButton.querySelector('.view-count');
+                viewCountDisplay.textContent = viewCount;
+            }
+        };
+            
         const commentsSection = document.createElement('div');
         commentsSection.classList.add('comments-section');
-        commentsSection.style.display = 'none'; // Ocultar inicialmente
+         commentsSection.id = 'commentsSection'; // Ocultar inicialmente
 
         const commentInput = document.createElement('div');
         commentInput.classList.add('comment-input');
@@ -64,12 +77,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const commentsList = document.createElement('ul');
         commentsList.classList.add('comments-list');
+        commentsList.id = 'commentsList';
 
         const closeCommentsButton = document.createElement('button');
+        closeCommentsButton.classList.add('close-comments');
+        closeCommentsButton.id = 'closeCommentsButton';
         closeCommentsButton.textContent = 'Fechar Comentários';
         closeCommentsButton.addEventListener('click', () => {
-            commentsSection.style.display = 'none';
-            commentButton.style.display = 'block';
+        commentsSection.style.display = 'none';
+        commentButton.style.display = 'block';
         });
 
         commentsSection.appendChild(commentInput);
