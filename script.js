@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         video.controls = true;
         video.muted = false;
         video.loop = true;
+        video.nodownload = false;
 
         // Adicionar botões de like, comentário e visualizações
         const bottomActions = document.createElement('div');
@@ -158,3 +159,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     videos.forEach((video) => observer.observe(video));
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dropdownButton = document.querySelector('.dropdown-button');
+    const dropdownContent = document.querySelector('.dropdown-content');
+
+    dropdownButton.addEventListener('click', () => {
+        const isVisible = dropdownContent.style.display === 'block';
+        dropdownContent.style.display = isVisible ? 'none' : 'block';
+    });
+
+    // Fechar o menu ao clicar fora dele
+    document.addEventListener('click', (event) => {
+        if (!dropdownButton.contains(event.target) && !dropdownContent.contains(event.target)) {
+            dropdownContent.style.display = 'none';
+        }
+    });
+});
+
+function openMusic() {
+    const musicUrl = "https://suaurl.com/musicas"; // Substitua pela sua URL
+    window.open(musicUrl, "_blank"); // Abre em uma nova aba
+}
+
