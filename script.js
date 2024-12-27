@@ -46,6 +46,58 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
+        // Botão de comentário
+        const commentButton = document.createElement('div');
+        commentButton.classList.add('comment');
+        commentButton.innerHTML = '💬 <span class="comment-count">0</span>';
+
+        const commentsSection = document.createElement('div');
+        commentsSection.classList.add('comments-section');
+        commentsSection.style.display = 'none'; // Ocultar inicialmente
+
+        const commentInput = document.createElement('div');
+        commentInput.classList.add('comment-input');
+        commentInput.innerHTML = `
+            <input type="text" placeholder="Adicione um comentário..." />
+            <button>Enviar</button>
+        `;
+
+        const commentsList = document.createElement('ul');
+        commentsList.classList.add('comments-list');
+
+        const closeCommentsButton = document.createElement('button');
+        closeCommentsButton.textContent = 'Fechar Comentários';
+        closeCommentsButton.addEventListener('click', () => {
+            commentsSection.style.display = 'none';
+            commentButton.style.display = 'block';
+        });
+
+        commentsSection.appendChild(commentInput);
+        commentsSection.appendChild(commentsList);
+        commentsSection.appendChild(closeCommentsButton);
+
+        commentButton.addEventListener('click', () => {
+            commentsSection.style.display = 'block';
+            commentButton.style.display = 'none';
+        });
+
+        const addCommentButton = commentInput.querySelector('button');
+        const commentInputField = commentInput.querySelector('input');
+
+        addCommentButton.addEventListener('click', () => {
+            const commentText = commentInputField.value.trim();
+            if (commentText) {
+                const newComment = document.createElement('li');
+                newComment.textContent = commentText;
+                commentsList.appendChild(newComment);
+                commentInputField.value = '';
+                const commentCount = commentButton.querySelector('.comment-count');
+                commentCount.textContent = parseInt(commentCount.textContent) + 1;
+            } else {
+                alert('Por favor, digite um comentário!');
+            }
+        });
+
         // Botão de visualizações
         const viewButton = document.createElement('div');
         viewButton.classList.add('view');
@@ -61,10 +113,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         bottomActions.appendChild(likeButton);
+        bottomActions.appendChild(commentButton);
         bottomActions.appendChild(viewButton);
 
         videoContainer.appendChild(video);
         videoContainer.appendChild(bottomActions);
+        videoContainer.appendChild(commentsSection);
         videoWrapper.appendChild(videoContainer);
 
         // Configurar observador para incrementar visualizações
@@ -111,3 +165,4 @@ function openMusic() {
     const musicUrl = "https://suaurl.com/musicas"; // Substitua pela sua URL
     window.open(musicUrl, "_blank"); // Abre em uma nova aba
 }
+
