@@ -1,3 +1,20 @@
+// Configuração do Firebase
+import { initializeApp } from "firebase/app";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
+
+// Inicialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBwMGd_d7Z1yRUtZwCkXUyefoarBnNODoc",
+  authDomain: "plys-66bc0.firebaseapp.com",
+  projectId: "plys-66bc0",
+  storageBucket: "plys-66bc0.firebasestorage.app",
+  messagingSenderId: "1047108866919",
+  appId: "1:1047108866919:web:9c448792ec4731577755c2",
+  measurementId: "G-F1RQJGLMXF"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Links dos vídeos
     const videoLinks = [
@@ -53,20 +70,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         commentButton.addEventListener('click', () => {
             commentsSection.style.display = 'block';
             commentButton.style.display = 'none';
+        });
 
-            // Contador de visualizações
-        const incrementViewCount = () => {
-            if (!hasBeenViewed) {
-                hasBeenViewed = true;
-                viewCount++;
-                const viewCountDisplay = viewButton.querySelector('.view-count');
-                viewCountDisplay.textContent = viewCount;
-            }
-        };
-            
         const commentsSection = document.createElement('div');
         commentsSection.classList.add('comments-section');
-         commentsSection.id = 'commentsSection'; // Ocultar inicialmente
+        commentsSection.id = 'commentsSection';
 
         const commentInput = document.createElement('div');
         commentInput.classList.add('comment-input');
@@ -84,18 +92,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         closeCommentsButton.id = 'closeCommentsButton';
         closeCommentsButton.textContent = 'Fechar Comentários';
         closeCommentsButton.addEventListener('click', () => {
-        commentsSection.style.display = 'none';
-        commentButton.style.display = 'block';
+            commentsSection.style.display = 'none';
+            commentButton.style.display = 'block';
         });
 
         commentsSection.appendChild(commentInput);
         commentsSection.appendChild(commentsList);
         commentsSection.appendChild(closeCommentsButton);
-
-        commentButton.addEventListener('click', () => {
-            commentsSection.style.display = 'block';
-            commentButton.style.display = 'none';
-        });
 
         const addCommentButton = commentInput.querySelector('button');
         const commentInputField = commentInput.querySelector('input');
@@ -120,9 +123,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         viewButton.innerHTML = '👁️ <span class="view-count">0</span>';
         let hasBeenViewed = false;
 
-        const incrementViewCount = () => {
+        const incrementViewCount = async () => {
             if (!hasBeenViewed) {
                 hasBeenViewed = true;
+                const videoId = `video_${i + 1}`;
+                const videoRef = doc(db, "videos", videoId);
+                
+                const videoDoc = await getDoc(videoRef);
+                if (videoDoc.exists()) {
+                    await updateDoc(videoRef, {
+                        views: increment(1)
+                    });
+                } else {
+                    await setDoc(videoRef, { views: 1 });
+                }
+
+                // Atualiza o contador local
                 const viewCountDisplay = viewButton.querySelector('.view-count');
                 viewCountDisplay.textContent = parseInt(viewCountDisplay.textContent) + 1;
             }
@@ -147,7 +163,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     video.play();
-                    incrementViewCount();
+                    incrementViewCount(); // Incrementa visualização no Firestore
                 } else {
                     video.pause();
                 }
@@ -181,4 +197,3 @@ function openMusic() {
     const musicUrl = "https://suaurl.com/musicas"; // Substitua pela sua URL
     window.open(musicUrl, "_blank"); // Abre em uma nova aba
 }
-
