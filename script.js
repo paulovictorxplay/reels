@@ -1,20 +1,3 @@
-// Configuração do Firebase
-import { initializeApp } from "firebase/app";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, increment } from "firebase/firestore";
-
-// Inicialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyBwMGd_d7Z1yRUtZwCkXUyefoarBnNODoc",
-  authDomain: "plys-66bc0.firebaseapp.com",
-  projectId: "plys-66bc0",
-  storageBucket: "plys-66bc0.firebasestorage.app",
-  messagingSenderId: "1047108866919",
-  appId: "1:1047108866919:web:9c448792ec4731577755c2",
-  measurementId: "G-F1RQJGLMXF"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
 document.addEventListener('DOMContentLoaded', async () => {
     // Links dos vídeos
     const videoLinks = [
@@ -28,7 +11,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const fetchAndCreateBlobUrl = async (url) => {
         const response = await fetch(url);
         const blob = await response.blob();
-        return URL.createObjectURL(blob);
+        const blobUrl = URL.createObjectURL(blob);
+        console.log(blobUrl);  // Verifique o URL gerado no console
+        return blobUrl;
     };
 
     // Criar vídeos dinamicamente com blobs
@@ -173,27 +158,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         observer.observe(video);
     }
 });
-
-// Menu suspenso
-document.addEventListener('DOMContentLoaded', () => {
-    const dropdownButton = document.querySelector('.dropdown-button');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    dropdownButton.addEventListener('click', () => {
-        const isVisible = dropdownContent.style.display === 'block';
-        dropdownContent.style.display = isVisible ? 'none' : 'block';
-    });
-
-    // Fechar o menu ao clicar fora dele
-    document.addEventListener('click', (event) => {
-        if (!dropdownButton.contains(event.target) && !dropdownContent.contains(event.target)) {
-            dropdownContent.style.display = 'none';
-        }
-    });
-});
-
-// Função para abrir a página de músicas
-function openMusic() {
-    const musicUrl = "https://suaurl.com/musicas"; // Substitua pela sua URL
-    window.open(musicUrl, "_blank"); // Abre em uma nova aba
-}
