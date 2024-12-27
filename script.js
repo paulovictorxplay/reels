@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // Links dos vídeos
     const videoLinks = [
         "https://res.cloudinary.com/ddcizz79j/video/upload/v1735074793/teste_reels_t7k7da.mp4",
         "https://res.cloudinary.com/ddcizz79j/video/upload/v1735075109/reels2_ztqvdo.mp4"
@@ -14,29 +13,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         return URL.createObjectURL(blob);
     };
 
-    // Criar vídeos dinamicamente com blobs
     for (let i = 0; i < videoLinks.length; i++) {
         const link = videoLinks[i];
         const videoContainer = document.createElement('div');
         videoContainer.classList.add('video-container');
 
         const video = document.createElement('video');
-        video.src = await fetchAndCreateBlobUrl(link); // Gera o Blob URL
+        video.src = await fetchAndCreateBlobUrl(link);
         video.controls = true;
         video.muted = false;
         video.loop = true;
-        video.nodownload = false;
 
-        // Adicionar botões de like, comentário e visualizações
+        // Botões
         const bottomActions = document.createElement('div');
         bottomActions.classList.add('bottom-actions');
 
-        // Botão de like
+        // Botão de Curtida
         const likeButton = document.createElement('div');
         likeButton.classList.add('like-button');
-        likeButton.innerHTML = '❤️ <span class="like-count" id="likeCount">0</span>';
-
-        // Adicionar evento de curtir
+        likeButton.innerHTML = '❤️ <span class="like-count">0</span>';
         let liked = false;
         likeButton.addEventListener('click', () => {
             if (!liked) {
@@ -47,138 +42,55 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Botão de comentário
-        const commentButton = document.createElement('div');
-        commentButton.classList.add('comment');
-        commentButton.innerHTML = '💬 <span class="comment-count" id="commentCount">0</span>';
-        commentButton.addEventListener('click', () => {
-            commentsSection.style.display = 'block';
-            commentButton.style.display = 'none';
-        });
-
-        // Botão de visualizações
+        // Botão de Visualização
         const viewButton = document.createElement('div');
         viewButton.classList.add('view');
-        viewButton.innerHTML = '👁️ <span class="view-count" id="viewCount">0</span>';
-        let viewCount = 0;
+        viewButton.innerHTML = '👁️ <span class="view-count">0</span>';
         let hasBeenViewed = false;
-
-        // Contador de visualizações
         const incrementViewCount = () => {
             if (!hasBeenViewed) {
                 hasBeenViewed = true;
-                viewCount++;
-                const viewCountDisplay = viewButton.querySelector('.view-count');
-                viewCountDisplay.textContent = viewCount;
+                const viewCount = viewButton.querySelector('.view-count');
+                viewCount.textContent = parseInt(viewCount.textContent) + 1;
             }
         };
 
-        // Seção de comentários
-        const commentsSection = document.createElement('div');
-        commentsSection.classList.add('comments-section');
-        commentsSection.id = 'commentsSection';
-
-        const commentInput = document.createElement('div');
-        commentInput.classList.add('comment-input');
-        commentInput.innerHTML = `
-            <input type="text" id="commentInput" placeholder="Adicione um comentário..." />
-            <button id="addCommentButton">Enviar</button>
-        `;
-
-        const commentsList = document.createElement('ul');
-        commentsList.classList.add('comments-list');
-        commentsList.id = 'commentsList';
-
-        const closeCommentsButton = document.createElement('button');
-        closeCommentsButton.classList.add('close-comments');
-        closeCommentsButton.id = 'closeCommentsButton';
-        closeCommentsButton.textContent = 'Fechar Comentários';
-        closeCommentsButton.addEventListener('click', () => {
-            commentsSection.style.display = 'none';
-            commentButton.style.display = 'block';
-        });
-
-        commentsSection.appendChild(commentInput);
-        commentsSection.appendChild(commentsList);
-        commentsSection.appendChild(closeCommentsButton);
-
-        // Evento de adicionar comentário
-        const addCommentButton = commentInput.querySelector('#addCommentButton');
-        addCommentButton.addEventListener('click', () => {
-            const commentText = commentInput.querySelector('input').value.trim();
-            if (commentText) {
-                const newComment = document.createElement('li');
-                newComment.textContent = commentText;
-                commentsList.appendChild(newComment);
-                commentInput.querySelector('input').value = '';
-                const commentCount = commentButton.querySelector('.comment-count');
-                commentCount.textContent = parseInt(commentCount.textContent) + 1;
-            } else {
-                alert('Por favor, digite um comentário!');
-            }
-        });
-
         bottomActions.appendChild(likeButton);
-        bottomActions.appendChild(commentButton);
         bottomActions.appendChild(viewButton);
-
         videoContainer.appendChild(video);
         videoContainer.appendChild(bottomActions);
-        videoContainer.appendChild(commentsSection);
         videoWrapper.appendChild(videoContainer);
+
+        // Observer para detectar visualizações
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        incrementViewCount();
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            },
+            { threshold: 0.8 }
+        );
+        observer.observe(video);
     }
 
-    const videos = document.querySelectorAll('video');
-
-    // Configuração do Intersection Observer
-    const observerOptions = {
-        root: null,
-        threshold: 0.8,
-    };
-
-    let activeVideo = null;
-
-    const playVisibleVideo = (entries) => {
-        entries.forEach((entry) => {
-            const video = entry.target;
-
-            if (entry.isIntersecting) {
-                if (activeVideo && activeVideo !== video) {
-                    activeVideo.pause();
-                }
-                video.play();
-                activeVideo = video;
-                incrementViewCount(); // Incrementa a contagem de visualizações
-            } else {
-                video.pause();
-            }
-        });
-    };
-
-    const observer = new IntersectionObserver(playVisibleVideo, observerOptions);
-
-    videos.forEach((video) => observer.observe(video));
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const dropdownButton = document.querySelector('.dropdown-button');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    dropdownButton.addEventListener('click', () => {
-        const isVisible = dropdownContent.style.display === 'block';
-        dropdownContent.style.display = isVisible ? 'none' : 'block';
+    // Adicionar menu suspenso
+    const menuButton = document.querySelector('.dropdown-button');
+    const menuContent = document.querySelector('.dropdown-content');
+    menuButton.addEventListener('click', () => {
+        const isVisible = menuContent.style.display === 'block';
+        menuContent.style.display = isVisible ? 'none' : 'block';
     });
 
-    // Fechar o menu ao clicar fora dele
     document.addEventListener('click', (event) => {
-        if (!dropdownButton.contains(event.target) && !dropdownContent.contains(event.target)) {
-            dropdownContent.style.display = 'none';
+        if (!menuButton.contains(event.target) && !menuContent.contains(event.target)) {
+            menuContent.style.display = 'none';
         }
     });
 });
 
-function openMusic() {
-    const musicUrl = "https://suaurl.com/musicas"; // Substitua pela sua URL
-    window.open(musicUrl, "_blank"); // Abre em uma nova aba
-}
 
