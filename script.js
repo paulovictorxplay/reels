@@ -160,14 +160,3 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-
-import { getDoc, doc } from "firebase/firestore"; 
-
-const userRef = doc(db, "usuario", "Eaumi1HIRIfPbbdrwJnD");
-const userDoc = await getDoc(userRef);
-
-if (userDoc.exists()) {
-    console.log("Documento encontrado:", userDoc.data());
-} else {
-    console.log("Documento não encontrado");
-}
